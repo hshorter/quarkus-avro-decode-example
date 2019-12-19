@@ -1,0 +1,17 @@
+{"namespace": "org.acme.avro",
+	"type"      : "record",
+	"name"      : "Example",
+	"fields"    : [
+		{ "name" : "ExampleHeader",
+			"type" : {
+				"type"   : "record",
+				"name"   : "exampleHeaderFields",
+				"fields" : [
+					{ "name"    : "name",      "type"    :   "string"   },
+					{ "name"    : "time",      "type"    :   "long"   }
+				]
+			}
+		},
+		{ "name"     : "values",   "type"    :    { "type": "map", "values": "int" } }
+	]
+}
