@@ -17,6 +17,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.0.1.Final</quarkus.platform.version>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
+    <avro.version>1.9.1</avro.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -59,7 +60,7 @@
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.9.1</version>
+      <version>${avro.version}</version>
     </dependency>
   </dependencies>
   <build>
