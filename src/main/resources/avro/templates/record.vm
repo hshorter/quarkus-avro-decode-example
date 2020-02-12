@@ -62,7 +62,17 @@ static {
    * @return the message encoder used by this class
    */
   public static BinaryMessageEncoder<${this.mangle($schema.getName())}> getEncoder() {
-    return ENCODER;
+    BinaryMessageEncoder<{this.mangle($schema.getName())}> result = ENCODER.get();
+    if (result == null) {
+        result = new BinaryMessageEncoder<>(MODEL$, SCHEMA$);
+        if (ENCODER.compareAndSet(null, result)) {
+            return result;
+        } else {
+            return ENCODER.get();
+        }
+    } else {
+            return result;
+    }
   }
 
   /**
@@ -70,7 +80,17 @@ static {
    * @return the message decoder used by this class
    */
   public static BinaryMessageDecoder<${this.mangle($schema.getName())}> getDecoder() {
-    return DECODER;
+    BinaryMessageDecoder<{this.mangle($schema.getName())}> result = DECODER.get();
+    if (result == null) {
+        result = new BinaryMessageDecoder<>(MODEL$, SCHEMA$);
+        if (DECODER.compareAndSet(null, result)) {
+            return result;
+        } else {
+            return DECODER.get();
+        }
+    } else {
+        return result;
+    }
   }
 
   /**
@@ -536,10 +556,21 @@ static {
   }
 
   @SuppressWarnings("unchecked")
-  private static org.apache.avro.io.DatumReader<${this.mangle($schema.getName())}> READER$;
+  private static AtomicReference<org.apache.avro.io.DatumReader<${this.mangle($schema.getName())}>> READER$;
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
+    DatumReader<{this.mangle($schema.getName())}> result = READER$.get();
+    if (result == null) {
+    result = (DatumReader<{this.mangle($schema.getName())}>)MODEL$.createDatumReader(SCHEMA$);
+        if (READER$.compareAndSet(null, result)) {
+        result.read(this, SpecificData.getDecoder(in));
+        } else {
+        READER$.get().read(this, SpecificData.getDecoder(in));
+        }
+        } else {
+        result.read(this, SpecificData.getDecoder(in));
+        }
     READER$.read(this, SpecificData.getDecoder(in));
   }
 
