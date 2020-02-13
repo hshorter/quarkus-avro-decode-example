@@ -5,14 +5,17 @@
  */
 package org.acme.avro;
 
-import org.apache.avro.generic.GenericArray;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
-import org.apache.avro.message.BinaryMessageEncoder;
-import org.apache.avro.message.BinaryMessageDecoder;
-import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
+@io.quarkus.runtime.annotations.RegisterForReflection
 public class exampleHeaderFields extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
   private static final long serialVersionUID = 2784319687660593971L;
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"exampleHeaderFields\",\"namespace\":\"org.acme.avro\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"long\"}]}");
@@ -20,18 +23,28 @@ public class exampleHeaderFields extends org.apache.avro.specific.SpecificRecord
 
   private static SpecificData MODEL$ = new SpecificData();
 
-  private static final BinaryMessageEncoder<exampleHeaderFields> ENCODER =
-      new BinaryMessageEncoder<exampleHeaderFields>(MODEL$, SCHEMA$);
+  private static final AtomicReference<BinaryMessageEncoder<exampleHeaderFields>> ENCODER =
+          new AtomicReference<>(null);
 
-  private static final BinaryMessageDecoder<exampleHeaderFields> DECODER =
-      new BinaryMessageDecoder<exampleHeaderFields>(MODEL$, SCHEMA$);
+  private static final AtomicReference<BinaryMessageDecoder<exampleHeaderFields>> DECODER =
+          new AtomicReference<>(null);
 
   /**
    * Return the BinaryMessageEncoder instance used by this class.
    * @return the message encoder used by this class
    */
   public static BinaryMessageEncoder<exampleHeaderFields> getEncoder() {
-    return ENCODER;
+    BinaryMessageEncoder<exampleHeaderFields> result = ENCODER.get();
+    if (result == null) {
+      result = new BinaryMessageEncoder<>(MODEL$, SCHEMA$);
+      if (ENCODER.compareAndSet(null, result)) {
+        return result;
+      } else {
+        return ENCODER.get();
+      }
+    } else {
+      return result;
+    }
   }
 
   /**
@@ -39,7 +52,17 @@ public class exampleHeaderFields extends org.apache.avro.specific.SpecificRecord
    * @return the message decoder used by this class
    */
   public static BinaryMessageDecoder<exampleHeaderFields> getDecoder() {
-    return DECODER;
+    BinaryMessageDecoder<exampleHeaderFields> result = DECODER.get();
+    if (result == null) {
+      result = new BinaryMessageDecoder<>(MODEL$, SCHEMA$);
+      if (DECODER.compareAndSet(null, result)) {
+        return result;
+      } else {
+        return DECODER.get();
+      }
+    } else {
+      return result;
+    }
   }
 
   /**
@@ -57,7 +80,7 @@ public class exampleHeaderFields extends org.apache.avro.specific.SpecificRecord
    * @throws java.io.IOException if this instance could not be serialized
    */
   public java.nio.ByteBuffer toByteBuffer() throws java.io.IOException {
-    return ENCODER.encode(this);
+    return getEncoder().encode(this);
   }
 
   /**
@@ -68,7 +91,7 @@ public class exampleHeaderFields extends org.apache.avro.specific.SpecificRecord
    */
   public static exampleHeaderFields fromByteBuffer(
       java.nio.ByteBuffer b) throws java.io.IOException {
-    return DECODER.decode(b);
+    return getDecoder().decode(b);
   }
 
   @Deprecated public CharSequence name;
@@ -331,12 +354,22 @@ public class exampleHeaderFields extends org.apache.avro.specific.SpecificRecord
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumReader<exampleHeaderFields>
-    READER$ = (org.apache.avro.io.DatumReader<exampleHeaderFields>)MODEL$.createDatumReader(SCHEMA$);
+  private static final AtomicReference<org.apache.avro.io.DatumReader<exampleHeaderFields>>
+    READER$ = new AtomicReference<>(null);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
-    READER$.read(this, SpecificData.getDecoder(in));
+    DatumReader<exampleHeaderFields> result = READER$.get();
+    if (result == null) {
+      result = (DatumReader<exampleHeaderFields>)MODEL$.createDatumReader(SCHEMA$);
+      if (READER$.compareAndSet(null, result)) {
+        result.read(this, SpecificData.getDecoder(in));
+      } else {
+        READER$.get().read(this, SpecificData.getDecoder(in));
+      }
+    } else {
+      result.read(this, SpecificData.getDecoder(in));
+    }
   }
 
   @Override protected boolean hasCustomCoders() { return true; }
