@@ -17,7 +17,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.0.1.Final</quarkus.platform.version>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
-    <avro.version>1.9.1</avro.version>
+    <avro.version>1.11.3</avro.version>
   </properties>
   <dependencyManagement>
     <dependencies>
